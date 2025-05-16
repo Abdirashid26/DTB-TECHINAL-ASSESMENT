@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: account-service
+  r2dbc:
+    url: r2dbc:postgresql://postgres:5432/dtbbanking
+    username: dtb
+    password: dtbpassword
+
+  sql:
+    init:
+      mode: always
+
+server:
+  port: 8082

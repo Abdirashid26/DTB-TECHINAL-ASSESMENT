@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: dtbbanking-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: dtbbanking
+      POSTGRES_USER: dtb
+      POSTGRES_PASSWORD: dtbpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  customer-service:
+    build: ./customer-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+
+  account-service:
+    build: ./account-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+
+  card-service:
+    build: ./card-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
