@@ -1,10 +1,12 @@
 package com.dtbbanking.customer_service;
 
 import com.dtbbanking.customer_service.dto.CustomerRequestDto;
+import com.dtbbanking.customer_service.dto.UpdateCustomerRequestDto;
 import com.dtbbanking.customer_service.errors.DuplicateResourceException;
 import com.dtbbanking.customer_service.models.Customer;
 import com.dtbbanking.customer_service.repository.CustomerRepository;
 import com.dtbbanking.customer_service.service.CustomerService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,6 +26,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 
+
+
+@Slf4j
 public class CustomerServiceTest {
 
     private CustomerRepository customerRepository;
@@ -40,10 +45,6 @@ public class CustomerServiceTest {
                 .id(UUID.randomUUID())
                 .firstName("Faisal")
                 .lastName("Abdirashid")
-                .email("faisaldev26@gmail.com")
-                .phoneNumber("254795881812")
-                .nationalId("38481165")
-                .dateOfBirth(LocalDateTime.of(2024, 1, 1, 0, 0))
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -59,35 +60,21 @@ public class CustomerServiceTest {
         dto.setNationalId("38481165");
         dto.setDateOfBirth(LocalDateTime.of(2024, 1, 1, 0, 0));
 
-        when(customerRepository.existsByPhoneNumberOrNationalId(dto.getPhoneNumber(), dto.getNationalId()))
-                .thenReturn(Mono.just(false));
+
         when(customerRepository.save(any(Customer.class))).thenReturn(Mono.just(savedCustomer));
 
         StepVerifier.create(customerService.createCustomer(dto))
-                .expectNextMatches(response -> response.getEmail().equals("faisaldev26@gmail.com"))
+                .expectNextMatches(response -> response.getFullName().equals("Faisal Abdirashid"))
                 .verifyComplete();
     }
 
-    @Test
-    void testCreateCustomer_duplicatePhoneOrId() {
-        CustomerRequestDto dto = new CustomerRequestDto();
-        dto.setPhoneNumber("254795881812");
-        dto.setNationalId("38481165");
-
-        when(customerRepository.existsByPhoneNumberOrNationalId(dto.getPhoneNumber(), dto.getNationalId()))
-                .thenReturn(Mono.just(true));
-
-        StepVerifier.create(customerService.createCustomer(dto))
-                .expectError(DuplicateResourceException.class)
-                .verify();
-    }
 
     @Test
     void testGetCustomerById_success() {
         when(customerRepository.findById(any(UUID.class))).thenReturn(Mono.just(savedCustomer));
 
         StepVerifier.create(customerService.getCustomerById(UUID.randomUUID()))
-                .expectNextMatches(response -> response.getFullName().equals("Faisal Abdirashid"))
+                .expectNextMatches(response -> response.getFullName().strip().equals("Faisal Abdirashid"))
                 .verifyComplete();
     }
 
@@ -122,7 +109,7 @@ public class CustomerServiceTest {
                 .thenReturn(Flux.just(savedCustomer));
 
         StepVerifier.create(customerService.getCustomersByCreatedDate(start, end, 0, 10))
-                .expectNextMatches(response -> response.getEmail().equals("faisaldev26@gmail.com"))
+                .expectNextMatches(response -> response.getFullName().equals("Faisal Abdirashid"))
                 .verifyComplete();
     }
 
@@ -155,7 +142,7 @@ public class CustomerServiceTest {
                 .thenReturn(Flux.just(savedCustomer));
 
         StepVerifier.create(customerService.getAllCustomers(0, 10))
-                .expectNextMatches(c -> c.getEmail().equals("faisaldev26@gmail.com"))
+                .expectNextMatches(c -> c.getFullName().equals("Faisal Abdirashid"))
                 .verifyComplete();
     }
 
@@ -167,5 +154,43 @@ public class CustomerServiceTest {
         StepVerifier.create(customerService.getAllCustomers(0, 10))
                 .expectNextCount(0)
                 .verifyComplete();
+    }
+
+    @Test
+    void testUpdateCustomer_success() {
+        UUID customerId = savedCustomer.getId();
+
+        UpdateCustomerRequestDto updateDto = new UpdateCustomerRequestDto();
+        updateDto.setFirstName("UpdatedFirstName");
+        updateDto.setLastName("UpdatedLastName");
+        updateDto.setOtherName("UpdatedOther");
+
+        when(customerRepository.findById(customerId)).thenReturn(Mono.just(savedCustomer));
+        when(customerRepository.save(any(Customer.class))).thenAnswer(invocation -> {
+            Customer updated = invocation.getArgument(0);
+            return Mono.just(updated);
+        });
+
+        StepVerifier.create(customerService.updateCustomer(customerId, updateDto))
+                .expectNextMatches(updated ->
+                        updated.getFullName().equals("UpdatedFirstName UpdatedLastName UpdatedOther")
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    void testUpdateCustomer_notFound() {
+        UUID customerId = UUID.randomUUID();
+        UpdateCustomerRequestDto updateDto = new UpdateCustomerRequestDto();
+        updateDto.setFirstName("NewName");
+
+        when(customerRepository.findById(customerId)).thenReturn(Mono.empty());
+
+        StepVerifier.create(customerService.updateCustomer(customerId, updateDto))
+                .expectErrorMatches(error ->
+                        error instanceof ResponseStatusException &&
+                                ((ResponseStatusException) error).getStatusCode().is4xxClientError()
+                )
+                .verify();
     }
 }

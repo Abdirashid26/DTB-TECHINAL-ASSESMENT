@@ -1,14 +1,30 @@
 spring:
   application:
     name: card-service
+  datasource:
+    url: jdbc:postgresql://postgres:5432/dtbbanking
+    username: dtb
+    password: dtbpassword
+
+    # R2DBC for runtime
   r2dbc:
     url: r2dbc:postgresql://postgres:5432/dtbbanking
     username: dtb
     password: dtbpassword
 
-  sql:
-    init:
-      mode: always
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    url: jdbc:postgresql://postgres:5432/dtbbanking
+    user: dtb
+    password: dtbpassword
+
+
+
+account:
+  service:
+    base-url: http://account-service:8082/api/v1/accounts
+
 
 server:
   port: 8083

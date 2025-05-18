@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-tb-accounts
+      author: faisal
+      changes:
+        - sql:
+            sql: CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+        - createTable:
+            tableName: tb_accounts
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  defaultValueComputed: gen_random_uuid()
+              - column:
+                  name: iban
+                  type: VARCHAR(34)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: bic_swift
+                  type: VARCHAR(11)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: customer_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: NOW()
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: NOW()
+
+        - addForeignKeyConstraint:
+            baseTableName: tb_accounts
+            baseColumnNames: customer_id
+            referencedTableName: tb_customers
+            referencedColumnNames: id
+            onDelete: CASCADE
+            constraintName: fk_customer

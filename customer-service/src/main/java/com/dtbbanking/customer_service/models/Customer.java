@@ -25,13 +25,6 @@ public class Customer {
 
     private String otherName;
 
-    private String email;
-
-    private String phoneNumber;
-
-    private String nationalId;
-
-    private LocalDateTime dateOfBirth;
 
     @CreatedDate
     private LocalDateTime createdAt;

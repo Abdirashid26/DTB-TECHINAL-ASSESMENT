@@ -1,17 +1,28 @@
 spring:
   application:
     name: customer-service
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/dtbbanking
+    username: dtb
+    password: dtbpassword
+    driver-class-name: org.postgresql.Driver
+
   r2dbc:
     url: r2dbc:postgresql://postgres:5432/dtbbanking
     username: dtb
     password: dtbpassword
 
-  sql:
-    init:
-      mode: always
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    url: jdbc:postgresql://postgres:5432/dtbbanking
+    user: dtb
+    password: dtbpassword
 
 server:
   port: 8081
 
-
-
+logging:
+  level:
+    liquibase: DEBUG
