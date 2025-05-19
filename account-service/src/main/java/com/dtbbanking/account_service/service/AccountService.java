@@ -95,7 +95,7 @@ public class AccountService {
      */
     public Mono<AccountResponseDto> getAccountById(UUID id) {
         return accountRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found")))
+                .switchIfEmpty(Mono.error(new CustomerNotFoundException("Account not found")))
                 .map(AccountMapper::toResponseDto);
     }
 
@@ -152,7 +152,7 @@ public class AccountService {
         return accountRepository.existsById(id)
                 .flatMap(exists -> {
                     if (!exists) {
-                        return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+                        return Mono.error(new CustomerNotFoundException("Account not found"));
                     }
                     return accountRepository.deleteById(id);
                 });
@@ -167,7 +167,7 @@ public class AccountService {
      */
     public Mono<AccountResponseDto> updateAccount(UUID id, UpdateAccountRequestDto dto) {
         return accountRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found")))
+                .switchIfEmpty(Mono.error(new CustomerNotFoundException("Account not found")))
                 .flatMap(existing -> {
                     Mono<Void> validateCustomer = Mono.empty();
 

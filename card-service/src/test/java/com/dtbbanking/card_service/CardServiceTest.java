@@ -2,7 +2,7 @@ package com.dtbbanking.card_service;
 
 import com.dtbbanking.card_service.dto.CardRequestDto;
 import com.dtbbanking.card_service.dto.CardResponseDto;
-import com.dtbbanking.card_service.errors.CustomerNotFoundException;
+import com.dtbbanking.card_service.errors.GlobalException;
 import com.dtbbanking.card_service.mapper.CardMapper;
 import com.dtbbanking.card_service.model.Card;
 import com.dtbbanking.card_service.model.CardType;
@@ -94,7 +94,7 @@ public class CardServiceTest {
         when(cardRepository.countByAccountId(accountId)).thenReturn(Mono.just(2L));
 
         StepVerifier.create(cardService.createCard(requestDto))
-                .expectErrorMatches(e -> e instanceof CustomerNotFoundException &&
+                .expectErrorMatches(e -> e instanceof GlobalException &&
                         e.getMessage().contains("Account already has 2 cards"))
                 .verify();
     }
@@ -107,7 +107,7 @@ public class CardServiceTest {
         when(cardRepository.existsByAccountIdAndCardType(accountId, CardType.VIRTUAL)).thenReturn(Mono.just(true));
 
         StepVerifier.create(cardService.createCard(requestDto))
-                .expectErrorMatches(e -> e instanceof CustomerNotFoundException &&
+                .expectErrorMatches(e -> e instanceof GlobalException &&
                         e.getMessage().contains("Account already has a card of this type"))
                 .verify();
     }
@@ -125,8 +125,8 @@ public class CardServiceTest {
         when(cardRepository.findById(cardId)).thenReturn(Mono.empty());
 
         StepVerifier.create(cardService.deleteCard(cardId))
-                .expectErrorMatches(e -> e instanceof ResponseStatusException &&
-                        ((ResponseStatusException) e).getStatusCode() == HttpStatus.NOT_FOUND)
+                .expectErrorMatches(e -> e instanceof GlobalException &&
+                        ((GlobalException) e).getMessage().equalsIgnoreCase("Card not found"))
                 .verify();
     }
 

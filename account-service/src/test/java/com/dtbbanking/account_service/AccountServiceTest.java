@@ -118,8 +118,8 @@ public class AccountServiceTest {
         when(accountRepository.findById(randomId)).thenReturn(Mono.empty());
 
         StepVerifier.create(accountService.getAccountById(randomId))
-                .expectErrorMatches(e -> e instanceof ResponseStatusException &&
-                        ((ResponseStatusException) e).getStatusCode() == HttpStatus.NOT_FOUND)
+                .expectErrorMatches(e ->
+                        ((CustomerNotFoundException) e).getMessage().equals("Account not found"))
                 .verify();
     }
 
@@ -139,8 +139,8 @@ public class AccountServiceTest {
         when(accountRepository.existsById(id)).thenReturn(Mono.just(false));
 
         StepVerifier.create(accountService.deleteAccount(id))
-                .expectErrorMatches(e -> e instanceof ResponseStatusException &&
-                        ((ResponseStatusException) e).getStatusCode() == HttpStatus.NOT_FOUND)
+                .expectErrorMatches(e ->
+                        ((CustomerNotFoundException) e).getMessage().equalsIgnoreCase("Account not found"))
                 .verify();
     }
 

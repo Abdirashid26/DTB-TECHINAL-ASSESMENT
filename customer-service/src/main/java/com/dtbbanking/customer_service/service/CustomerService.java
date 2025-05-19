@@ -3,7 +3,7 @@ package com.dtbbanking.customer_service.service;
 import com.dtbbanking.customer_service.dto.CustomerRequestDto;
 import com.dtbbanking.customer_service.dto.CustomerResponseDto;
 import com.dtbbanking.customer_service.dto.UpdateCustomerRequestDto;
-import com.dtbbanking.customer_service.errors.DuplicateResourceException;
+import com.dtbbanking.customer_service.errors.GlobalException;
 import com.dtbbanking.customer_service.mapper.CustomerMapper;
 import com.dtbbanking.customer_service.models.Customer;
 import com.dtbbanking.customer_service.repository.CustomerRepository;
@@ -55,7 +55,7 @@ public class CustomerService {
      */
     public Mono<CustomerResponseDto> updateCustomer(UUID id, UpdateCustomerRequestDto dto) {
         return customerRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found")))
+                .switchIfEmpty(Mono.error(new GlobalException("Customer not found")))
                 .flatMap(existingCustomer -> {
                     if (dto.getFirstName() != null) {
                         existingCustomer.setFirstName(dto.getFirstName());
@@ -83,7 +83,7 @@ public class CustomerService {
 
         return customerRepository.findById(id)
                 .doOnNext(c -> log.info("Found customer: {} {}", c.getFirstName(), c.getLastName()))
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found")))
+                .switchIfEmpty(Mono.error(new GlobalException("Customer not found")))
                 .map(CustomerMapper::toResponseDto);
     }
 
@@ -130,7 +130,7 @@ public class CustomerService {
                     if (exists) {
                         return customerRepository.deleteById(id);
                     } else {
-                        return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+                        return Mono.error(new GlobalException("Customer not found"));
                     }
                 });
     }

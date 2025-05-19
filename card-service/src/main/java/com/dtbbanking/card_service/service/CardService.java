@@ -3,6 +3,7 @@ package com.dtbbanking.card_service.service;
 import com.dtbbanking.card_service.dto.CardRequestDto;
 import com.dtbbanking.card_service.dto.CardResponseDto;
 import com.dtbbanking.card_service.errors.CustomerNotFoundException;
+import com.dtbbanking.card_service.errors.GlobalException;
 import com.dtbbanking.card_service.mapper.CardMapper;
 import com.dtbbanking.card_service.model.Card;
 import com.dtbbanking.card_service.model.CardType;
@@ -53,7 +54,7 @@ public class CardService {
                         HttpStatusCode::is4xxClientError,
                         response -> {
                             log.warn("Account not found: {}", accountId);
-                            return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account does not exist"));
+                            return Mono.error(new GlobalException("Account does not exist"));
                         }
                 )
                 .toBodilessEntity()
@@ -72,13 +73,13 @@ public class CardService {
                 .flatMap(exists -> cardRepository.countByAccountId(dto.getAccountId()))
                 .flatMap(count -> {
                     if (count >= 2) {
-                        return Mono.error(new CustomerNotFoundException( "Account already has 2 cards"));
+                        return Mono.error(new GlobalException("Account already has 2 cards"));
                     }
                     return cardRepository.existsByAccountIdAndCardType(dto.getAccountId(), dto.getCardType());
                 })
                 .flatMap(exists -> {
                     if (exists) {
-                        return Mono.error(new CustomerNotFoundException("Account already has a card of this type"));
+                        return Mono.error(new GlobalException("Account already has a card of this type"));
                     }
                     Card card = cardMapper.toEntity(dto);
                     card.setPan(CardUtils.generatePan());
@@ -100,7 +101,7 @@ public class CardService {
      */
     public Mono<CardResponseDto> getCardById(UUID id, boolean unmask) {
         return cardRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found")))
+                .switchIfEmpty(Mono.error(new GlobalException("Card not found")))
                 .map(cardMapper::toDto)
                 .zipWith(cardRepository.findById(id))
                 .map(tuple2 -> unmask ? cardMapper.toDtoUnmasked(tuple2.getT2()) : maskSensitiveData(tuple2.getT1()));
@@ -148,12 +149,12 @@ public class CardService {
      */
     public Mono<CardResponseDto> updateCardAlias(UUID cardId, String newAlias) {
         return cardRepository.findById(cardId)
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found")))
+                .switchIfEmpty(Mono.error(new GlobalException("Card not found")))
                 .flatMap(card ->
                         cardRepository.existsByAccountIdAndCardAliasIgnoreCaseAndIdIsNot(card.getAccountId(), newAlias, cardId)
                                 .flatMap(duplicateExists -> {
                                     if (duplicateExists) {
-                                        return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate card alias for this account"));
+                                        return Mono.error(new GlobalException( "Duplicate card alias for this account"));
                                     }
                                     card.setCardAlias(newAlias);
                                     card.setUpdatedAt(LocalDateTime.now());
@@ -172,7 +173,7 @@ public class CardService {
      */
     public Mono<Void> deleteCard(UUID id) {
         return cardRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found")))
+                .switchIfEmpty(Mono.error(new GlobalException("Card not found")))
                 .flatMap(card -> cardRepository.deleteById(card.getId()));
     }
 

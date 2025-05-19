@@ -3,6 +3,7 @@ package com.dtbbanking.customer_service;
 import com.dtbbanking.customer_service.dto.CustomerRequestDto;
 import com.dtbbanking.customer_service.dto.UpdateCustomerRequestDto;
 import com.dtbbanking.customer_service.errors.DuplicateResourceException;
+import com.dtbbanking.customer_service.errors.GlobalException;
 import com.dtbbanking.customer_service.models.Customer;
 import com.dtbbanking.customer_service.repository.CustomerRepository;
 import com.dtbbanking.customer_service.service.CustomerService;
@@ -84,8 +85,7 @@ public class CustomerServiceTest {
 
         StepVerifier.create(customerService.getCustomerById(UUID.randomUUID()))
                 .expectErrorMatches(throwable ->
-                        throwable instanceof ResponseStatusException &&
-                                ((ResponseStatusException) throwable).getStatusCode().is4xxClientError()
+                        ((GlobalException) throwable).getMessage().equalsIgnoreCase("Customer not found")
                 )
                 .verify();
     }
@@ -130,8 +130,7 @@ public class CustomerServiceTest {
 
         StepVerifier.create(customerService.deleteCustomer(UUID.randomUUID()))
                 .expectErrorMatches(throwable ->
-                        throwable instanceof ResponseStatusException &&
-                                ((ResponseStatusException) throwable).getStatusCode().is4xxClientError()
+                        ((GlobalException) throwable).getMessage().equalsIgnoreCase("Customer not found")
                 )
                 .verify();
     }
@@ -188,8 +187,7 @@ public class CustomerServiceTest {
 
         StepVerifier.create(customerService.updateCustomer(customerId, updateDto))
                 .expectErrorMatches(error ->
-                        error instanceof ResponseStatusException &&
-                                ((ResponseStatusException) error).getStatusCode().is4xxClientError()
+                        ((GlobalException) error).getMessage().equalsIgnoreCase("Customer not found")
                 )
                 .verify();
     }

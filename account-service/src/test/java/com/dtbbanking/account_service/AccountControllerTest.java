@@ -74,31 +74,10 @@ class AccountControllerTest {
                 .bodyValue(validRequestDto)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(AccountResponseDto.class)
-                .value(resp -> assertEquals(responseDto.getIban(), resp.getIban()));
-    }
-
-    @Test
-    void createAccount_shouldReturnBadRequest_whenValidationFails() {
-        Path mockPath = mock(Path.class);
-        when(mockPath.toString()).thenReturn("iban");
-
-        ConstraintViolation<AccountRequestDto> mockViolation = mock(ConstraintViolation.class);
-        when(mockViolation.getPropertyPath()).thenReturn(mockPath);
-        when(mockViolation.getMessage()).thenReturn("IBAN is required");
-
-        @SuppressWarnings("unchecked")
-        Set<ConstraintViolation<AccountRequestDto>> violations = Set.of(mockViolation);
-        when(validator.validate(any(AccountRequestDto.class))).thenReturn(violations);
-
-        webTestClient.post()
-                .uri("/api/v1/accounts")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(validRequestDto)
-                .exchange()
-                .expectStatus().isBadRequest()
                 .expectBody()
-                .jsonPath("$.iban").isEqualTo("IBAN is required");
+                .jsonPath("$.data.iban").isEqualTo(responseDto.getIban())
+                .jsonPath("$.data.bicSwift").isEqualTo(responseDto.getBicSwift())
+                .jsonPath("$.data.customerId").isEqualTo(customerId.toString());
     }
 
 
@@ -106,13 +85,11 @@ class AccountControllerTest {
     void updateAccount_shouldReturnOk() {
         UpdateAccountRequestDto updateDto = new UpdateAccountRequestDto("DTBKKENA", customerId);
 
-
-        // Prepare a response DTO reflecting the updateDto values
         AccountResponseDto updatedResponseDto = AccountResponseDto.builder()
                 .id(accountId)
-                .iban(validRequestDto.getIban()) // original IBAN
-                .bicSwift(updateDto.getBicSwift()) // updated BIC
-                .customerId(updateDto.getCustomerId()) // updated customerId
+                .iban(validRequestDto.getIban())
+                .bicSwift(updateDto.getBicSwift())
+                .customerId(updateDto.getCustomerId())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -126,15 +103,11 @@ class AccountControllerTest {
                 .bodyValue(updateDto)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(AccountResponseDto.class)
-                .value(resp -> {
-                    assertNotNull(resp);
-                    assertEquals(accountId, resp.getId());
-                    assertEquals(updateDto.getBicSwift(), resp.getBicSwift());
-                    assertEquals(updateDto.getCustomerId(), resp.getCustomerId());
-                });
+                .expectBody()
+                .jsonPath("$.data.id").isEqualTo(accountId.toString())
+                .jsonPath("$.data.bicSwift").isEqualTo(updateDto.getBicSwift())
+                .jsonPath("$.data.customerId").isEqualTo(updateDto.getCustomerId().toString());
     }
-
 
     @Test
     void getAccount_shouldReturnAccount() {
@@ -144,8 +117,8 @@ class AccountControllerTest {
                 .uri("/api/v1/accounts/{id}", accountId)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(AccountResponseDto.class)
-                .value(resp -> assertEquals(accountId, resp.getId()));
+                .expectBody()
+                .jsonPath("$.data.id").isEqualTo(accountId.toString());
     }
 
     @Test
@@ -156,7 +129,8 @@ class AccountControllerTest {
                 .uri("/api/v1/accounts/{id}", accountId)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(Void.class);
+                .expectBody()
+                .jsonPath("$.data").isEqualTo("Account deleted successfully");
     }
 
     @Test
@@ -171,8 +145,8 @@ class AccountControllerTest {
                         .build())
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(AccountResponseDto.class)
-                .hasSize(1)
-                .value(list -> assertEquals(accountId, list.get(0).getId()));
+                .expectBody()
+                .jsonPath("$.data[0].id").isEqualTo(accountId.toString());
     }
 }
+

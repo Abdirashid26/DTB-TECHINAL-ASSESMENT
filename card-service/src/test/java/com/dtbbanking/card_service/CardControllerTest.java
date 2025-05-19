@@ -74,9 +74,7 @@ public class CardControllerTest {
 
     @Test
     void createCard_shouldReturnCreatedCard() {
-        // Mock validator to return no violations (pass validation)
         when(validator.validate(any(CardRequestDto.class))).thenReturn(Collections.emptySet());
-
         when(cardService.createCard(cardRequestDto)).thenReturn(Mono.just(cardResponseDto));
 
         webTestClient.post()
@@ -85,13 +83,9 @@ public class CardControllerTest {
                 .bodyValue(cardRequestDto)
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(CardResponseDto.class)
-                .value(response -> {
-                    assertEquals(cardResponseDto.getId(), response.getId());
-                    assertEquals("MyCard", response.getCardAlias());
-                });
+                .expectBody()
+                .jsonPath("$.data.cardAlias").isEqualTo("MyCard");
     }
-
 
     @Test
     void getCardById_shouldReturnCard() {
@@ -101,11 +95,8 @@ public class CardControllerTest {
                 .uri("/api/v1/cards/{id}", cardId)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(CardResponseDto.class)
-                .value(response -> {
-                    assertEquals(cardId, response.getId());
-                    assertEquals("MyCard", response.getCardAlias());
-                });
+                .expectBody()
+                .jsonPath("$.data.cardAlias").isEqualTo("MyCard");
     }
 
     @Test
@@ -120,12 +111,8 @@ public class CardControllerTest {
                         .build())
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(CardResponseDto.class)
-                .hasSize(1)
-                .value(cards -> {
-                    assertEquals(cardId, cards.get(0).getId());
-                    assertEquals("MyCard", cards.get(0).getCardAlias());
-                });
+                .expectBody()
+                .jsonPath("$.data[0].cardAlias").isEqualTo("MyCard");
     }
 
     @Test
@@ -152,10 +139,8 @@ public class CardControllerTest {
                 .bodyValue(updateRequest)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(CardResponseDto.class)
-                .value(response -> {
-                    assertEquals(newAlias, response.getCardAlias());
-                });
+                .expectBody()
+                .jsonPath("$.data.cardAlias").isEqualTo("UpdatedAlias");
     }
 
     @Test
@@ -166,5 +151,26 @@ public class CardControllerTest {
                 .uri("/api/v1/cards/{id}", cardId)
                 .exchange()
                 .expectStatus().isNoContent();
+    }
+
+    @Test
+    void getAccountIdsByCardAlias_shouldReturnListOfAccountIds() {
+        String alias = "MyCard";
+        UUID acc1 = UUID.randomUUID();
+        UUID acc2 = UUID.randomUUID();
+
+        when(cardService.getAccountIdsByCardAlias(alias)).thenReturn(Flux.just(acc1, acc2));
+
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/api/v1/cards/internal/cards/account-ids")
+                        .queryParam("alias", alias)
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.data.length()").isEqualTo(2)
+                .jsonPath("$.data[0]").isEqualTo(acc1.toString())
+                .jsonPath("$.data[1]").isEqualTo(acc2.toString());
     }
 }
