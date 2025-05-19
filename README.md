@@ -191,9 +191,6 @@ To import:
     - Automate build/test/deploy pipelines using Jenkins, GitHub Actions, or GitLab CI.
     - Container scanning and vulnerability analysis.
 
-13. **Schema Evolution:**
-
-    - Use Liquibase or Flyway for version-controlled database migrations.
 
 ---
 
