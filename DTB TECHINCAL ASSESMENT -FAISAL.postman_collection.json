@@ -1,0 +1,870 @@
+{
+	"info": {
+		"_postman_id": "0fe5e42d-c7bb-4eae-b75b-2011d5009031",
+		"name": "DTB TECHINCAL ASSESMENT -FAISAL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24456090",
+		"_collection_link": "https://faisal-farah-dev-867765.postman.co/workspace/44fb95d2-4d2e-41d9-8f2d-0e79a8dbde52/collection/24456090-0fe5e42d-c7bb-4eae-b75b-2011d5009031?action=share&source=collection_link&creator=24456090"
+	},
+	"item": [
+		{
+			"name": "Customer Service",
+			"item": [
+				{
+					"name": "CREATE CUSTOMER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"Faisal\", // required\r\n  \"lastName\": \"Faisal\", // required\r\n  \"otherName\": \"Faisal\" // optional\r\n\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{customer-service-url}}/api/v1/customers",
+							"host": [
+								"{{customer-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET CUSTOMER BY ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{customer-service-url}}/api/v1/customers/aad831be-ad59-4366-9a19-1b7e734080c1",
+							"host": [
+								"{{customer-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"customers",
+								"aad831be-ad59-4366-9a19-1b7e734080c1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FILTER BY NAME (use either first name , last name or other name)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{customer-service-url}}/api/v1/customers?name=Ryan0",
+							"host": [
+								"{{customer-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"customers"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Ryan0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FILTER BY CREATED DATE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{customer-service-url}}/api/v1/customers?start=2025-01-01T00:00:00&end=2026-01-01T00:00:00&page=0&size=10",
+							"host": [
+								"{{customer-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"customers"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "2025-01-01T00:00:00"
+								},
+								{
+									"key": "end",
+									"value": "2026-01-01T00:00:00"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL CUSTOMERS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{customer-service-url}}/api/v1/customers?page=0&size=10",
+							"host": [
+								"{{customer-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"customers"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE CUSTOMER",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"Ryan0\", \r\n  \"lastName\": \"Ryan1\", \r\n  \"otherName\": \"Ryan2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{customer-service-url}}/api/v1/customers/5aa20dc1-14c7-49d7-86b2-e28fa37a08bc",
+							"host": [
+								"{{customer-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"customers",
+								"5aa20dc1-14c7-49d7-86b2-e28fa37a08bc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE CUSTOMER",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{customer-service-url}}/api/v1/customers/5aa20dc1-14c7-49d7-86b2-e28fa37a08bc",
+							"host": [
+								"{{customer-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"customers",
+								"5aa20dc1-14c7-49d7-86b2-e28fa37a08bc"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account Service",
+			"item": [
+				{
+					"name": "CREATE ACCOUNT",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"bicSwift\": \"DTBKKENA\",\r\n  \"customerId\": \"aad831be-ad59-4366-9a19-1b7e734080c0\"\r\n}\r\n// IBAN IS GENERATED ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{account-service-url}}/api/v1/accounts",
+							"host": [
+								"{{account-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL ACCOUNTS",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{account-service-url}}/api/v1/accounts?page=0&size=10",
+							"host": [
+								"{{account-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ACCOUNT BY ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{account-service-url}}/api/v1/accounts/8d0e0aed-c924-4984-97e6-6977260d8c01",
+							"host": [
+								"{{account-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts",
+								"8d0e0aed-c924-4984-97e6-6977260d8c01"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "iban",
+									"value": "GB29",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL ACCOUNTS (FILTER BY IBAN)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{account-service-url}}/api/v1/accounts?page=0&size=10&iban=KE40A32DD81BCE91461D97",
+							"host": [
+								"{{account-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "iban",
+									"value": "KE40A32DD81BCE91461D97"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL ACCOUNTS (FILTER BY CARD ALIAS)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{account-service-url}}/api/v1/accounts?cardAlias=My Visa&page=0&size=10",
+							"host": [
+								"{{account-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts"
+							],
+							"query": [
+								{
+									"key": "cardAlias",
+									"value": "My Visa"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE ACCOUNT",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"bicSwift\": \"DTKEKENAS\",\r\n  \"customerId\": \"aad831be-ad59-4366-9a19-1b7e734080c0\"\r\n}\r\n\r\n// IBAN CANNOT BE UPDATED , BUT ALLOWED UPDATE OF BICSWIFT TO TEST UPDATE",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{account-service-url}}/api/v1/accounts/8d0e0aed-c924-4984-97e6-6977260d8c02",
+							"host": [
+								"{{account-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts",
+								"8d0e0aed-c924-4984-97e6-6977260d8c02"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "iban",
+									"value": "GB29",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE ACCOUNT",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{account-service-url}}/api/v1/accounts/8d0e0aed-c924-4984-97e6-6977260d8c02",
+							"host": [
+								"{{account-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts",
+								"8d0e0aed-c924-4984-97e6-6977260d8c02"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "iban",
+									"value": "GB29",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Card Service",
+			"item": [
+				{
+					"name": "CREATE CARD",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"cardAlias\": \"My Visa\",\r\n  \"accountId\": \"75eefac7-f551-4d76-aee8-c9bcc2a41f84\",\r\n  \"cardType\": \"PHYSICAL\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{card-service-url}}/api/v1/cards",
+							"host": [
+								"{{card-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET CARD",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{card-service-url}}/api/v1/cards/e42ca77a-976b-41d2-827c-7f283e581e81?unmask=true",
+							"host": [
+								"{{card-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cards",
+								"e42ca77a-976b-41d2-827c-7f283e581e81"
+							],
+							"query": [
+								{
+									"key": "unmask",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL CARDS",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{card-service-url}}/api/v1/cards?page=0&size=10&unmask=true",
+							"host": [
+								"{{card-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cards"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "unmask",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET CARDS FILTERED BY ALIAS",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{card-service-url}}/api/v1/cards?alias=My&page=0&size=10&unmask=true",
+							"host": [
+								"{{card-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cards"
+							],
+							"query": [
+								{
+									"key": "alias",
+									"value": "My"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "unmask",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET CARDS FILTERED BY CARD TYPE",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{card-service-url}}/api/v1/cards?type=PHYSICAL&page=0&size=10&unmask=true",
+							"host": [
+								"{{card-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cards"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "PHYSICAL"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "unmask",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET CARDS FILTERED BY PAN",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{card-service-url}}/api/v1/cards?pan=4000001926299767&page=0&size=10&unmask=true",
+							"host": [
+								"{{card-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cards"
+							],
+							"query": [
+								{
+									"key": "pan",
+									"value": "4000001926299767"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "unmask",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE CARD",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"newAlias\": \"My Updated Visa2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{card-service-url}}/api/v1/cards/alias/e42ca77a-976b-41d2-827c-7f283e581e81",
+							"host": [
+								"{{card-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cards",
+								"alias",
+								"e42ca77a-976b-41d2-827c-7f283e581e81"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE CARD",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{card-service-url}}/api/v1/cards/66457bb4-6617-4bd3-aeaa-c607c8369183",
+							"host": [
+								"{{card-service-url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cards",
+								"66457bb4-6617-4bd3-aeaa-c607c8369183"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"value": "",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"value": "",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"value": "",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
